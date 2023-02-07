@@ -66,10 +66,6 @@ public final class HopperFilter extends JavaPlugin {
         return this.hopperManager;
     }
 
-    public Utils getUtils() {
-        return this.utils;
-    }
-
     public InventoryUtils getInventoryUtils() {
         return this.inventoryUtils;
     }
