@@ -9,16 +9,15 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 public class HopperDeserializer implements JsonDeserializer<HopperData> {
-    public HopperData deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-        final JsonObject obj = json.getAsJsonObject();
-        final JsonObject locObj = obj.getAsJsonObject("location");
-        final int x = locObj.get("x").getAsInt();
-        final int y = locObj.get("y").getAsInt();
-        final int z = locObj.get("z").getAsInt();
-        final String world = locObj.get("world").getAsString();
+    public HopperData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject obj = json.getAsJsonObject();
+        JsonObject locObj = obj.getAsJsonObject("location");
+        int x = locObj.get("x").getAsInt();
+        int y = locObj.get("y").getAsInt();
+        int z = locObj.get("z").getAsInt();
+        String world = locObj.get("world").getAsString();
         ItemStack[] items = null;
         try {
-
             if (obj.get("items") == null) {
                 Bukkit.getLogger().warning("HOPPER NULL: " + x + " | " + y + " | " + z + " | " + world);
                 items = new ItemStack[0];
@@ -28,10 +27,6 @@ public class HopperDeserializer implements JsonDeserializer<HopperData> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        final Integer allowedItems = obj.get("allowedItems").getAsInt();
-        final boolean blacklistEnabled = obj.get("blacklistEnabled").getAsBoolean();
-        return new HopperData(new Location(Bukkit.getWorld(world), x, y, z),
-                items, allowedItems,
-                blacklistEnabled);
+        return new HopperData(new Location(Bukkit.getWorld(world), x, y, z), items, obj.get("allowedItems").getAsInt(), obj.get("blacklistEnabled").getAsBoolean());
     }
 }

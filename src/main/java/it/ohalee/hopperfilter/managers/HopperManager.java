@@ -17,7 +17,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -82,11 +81,6 @@ public class HopperManager implements Listener {
     }
 
     @EventHandler
-    public void onUnload(WorldUnloadEvent e) {
-        this.plugin.saveHoppers();
-    }
-
-    @EventHandler
     public void onHopperClose(final InventoryCloseEvent e) {
         if (!(e.getInventory().getHolder() instanceof HopperHolder)) {
             return;
@@ -130,20 +124,13 @@ public class HopperManager implements Listener {
         if (!(e.getWhoClicked() instanceof final Player p)) {
             return;
         }
-
-        if (e.getInventory() == null) {
-            return;
-        }
-
-        final int allowedItems = this.hopperUtils.getAllowedItems(e.getInventory(), p);
-
-        if (e.getClickedInventory() != null && e.getClickedInventory().getHolder() instanceof HopperHolder && e.getSlot() >= allowedItems) {
+        if (e.getClickedInventory() != null && e.getClickedInventory().getHolder() instanceof HopperHolder && e.getSlot() >= this.hopperUtils.getAllowedItems(p)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onInventoryPickupItem(final InventoryPickupItemEvent e) {
+    public void onInventoryPickupItem(InventoryPickupItemEvent e) {
         if (!e.getInventory().getType().equals(InventoryType.HOPPER)) {
             return;
         }
@@ -153,7 +140,7 @@ public class HopperManager implements Listener {
     }
 
     @EventHandler
-    public void blockBreakEvent(final BlockBreakEvent e) {
+    public void blockBreakEvent(BlockBreakEvent e) {
         if (!e.getBlock().getType().equals(Material.HOPPER)) {
             return;
         }
@@ -165,7 +152,6 @@ public class HopperManager implements Listener {
         final Location loc = e.getBlock().getLocation();
 
         if (this.openHoppers.containsValue(loc)) {
-
             if (e.getPlayer().hasPermission("hoppermanager.admin.break")) {
                 this.hoppers.remove(loc);
 
@@ -173,22 +159,17 @@ public class HopperManager implements Listener {
                 e.getPlayer().sendMessage(HopperFilter.PREFIX + "Rimosso dalla lista degli hopper aperti.");
 
                 this.hopperUtils.dropItems(this.hoppers.get(loc));
-
-                //   this.plugin.saveHoppers();
                 return;
             }
 
             e.getPlayer().sendMessage(HopperFilter.PREFIX + "Non puoi rompere un hopper che è aperto.");
             e.setCancelled(true);
-        } else {
-            if (this.hoppers.containsKey(loc)) {
-
-                this.hopperUtils.dropItems(this.hoppers.get(loc));
-                this.hoppers.remove(loc);
-                this.removeOpenHopper(loc);
-
-                //   this.plugin.saveHoppers();
-            }
+            return;
+        }
+        if (this.hoppers.containsKey(loc)) {
+            this.hopperUtils.dropItems(this.hoppers.get(loc));
+            this.hoppers.remove(loc);
+            this.removeOpenHopper(loc);
         }
     }
 

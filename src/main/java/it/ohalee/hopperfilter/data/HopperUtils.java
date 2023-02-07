@@ -5,7 +5,6 @@ import it.ohalee.hopperfilter.managers.HopperManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class HopperUtils {
@@ -18,12 +17,12 @@ public class HopperUtils {
         this.hopperManager = manager;
     }
 
-    public Integer getAllowedItems(final Inventory inventory, final Player player) {
+    public Integer getAllowedItems(final Player player) {
         final Location hopperLoc = this.hopperManager.getHopperLocations().get(player.getUniqueId());
         if (hopperLoc != null && this.hopperManager.hoppers.containsKey(hopperLoc)) {
             return this.hopperManager.hoppers.get(hopperLoc).allowedItems;
         }
-        return this.plugin.getUtils().getAllowedFilterSize(player);
+        return 9;
     }
 
     public HopperData getHopperData(final Player p) {
@@ -37,8 +36,7 @@ public class HopperUtils {
         if (this.hopperManager.hoppers.containsKey(loc)) {
             return this.hopperManager.hoppers.get(loc);
         }
-        final int allowedItems = this.plugin.getUtils().getAllowedFilterSize(p);
-        final HopperData hopperData = new HopperData(loc, null, allowedItems, false);
+        HopperData hopperData = new HopperData(loc, null, 9, false);
         this.hopperManager.hoppers.put(loc, hopperData);
         return hopperData;
     }

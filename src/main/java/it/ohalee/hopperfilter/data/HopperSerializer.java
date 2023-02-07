@@ -11,34 +11,28 @@ import java.lang.reflect.Type;
 
 public class HopperSerializer implements JsonSerializer<HopperData> {
     public JsonElement serialize(final HopperData src, final Type typeOfSrc, final JsonSerializationContext context) {
-        final JsonObject obj = new JsonObject();
+        JsonObject obj = new JsonObject();
         obj.add("location", new JsonObject());
         obj.addProperty("allowedItems", src.allowedItems);
-        final JsonObject location = (JsonObject) obj.get("location");
-
+        JsonObject location = (JsonObject) obj.get("location");
         Location loc = src.location;
         if (loc != null) {
             World world = src.location.getWorld();
             if (world != null) {
                 location.addProperty("world", world.getName());
-            }
-            else {
-                location.addProperty("world", "oneblock_world");
+            } else {
+                location.addProperty("world", "islands");
                 System.out.println("WORLD IS NULL (NOT LOADED?): source: " + src + ", loaded: " + src.location.isWorldLoaded());
             }
-
             location.addProperty("x", src.location.getBlockX());
             location.addProperty("y", src.location.getBlockY());
             location.addProperty("z", src.location.getBlockZ());
-        }
-        else {
+        } else {
             System.out.println("LOCATION IS NULL: " + src);
         }
-
         obj.addProperty("blacklistEnabled", src.blacklistEnabled);
         if (src.hopperItems != null) {
-            final String items = BukkitSerializer.itemStackArrayToBase64(src.hopperItems);
-            obj.addProperty("items", items);
+            obj.addProperty("items", BukkitSerializer.itemStackArrayToBase64(src.hopperItems));
         }
         return obj;
     }

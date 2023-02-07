@@ -14,30 +14,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class HopperGUI implements Listener {
-    HopperFilter plugin;
-    ItemStack barrier;
-    int size;
+    private final HopperFilter plugin;
 
     public HopperGUI(final HopperFilter plugin) {
-        this.barrier = null;
         this.plugin = plugin;
-        this.size = 54;
-        this.barrier = new ItemStack(Material.BARRIER);
     }
 
-    public void openHopperGUI(final Player player, final HopperData hopperData) {
-        final int allowedItems = hopperData.allowedItems;
-        final ItemStack[] filterItems = hopperData.hopperItems;
-        final String title = "§8Filtro Hopper";
-        final int size = this.plugin.getUtils().getInventorySize(allowedItems);
-        final Inventory inventory = Bukkit.createInventory(new HopperHolder(), size, Component.text(title));
-
-        if (filterItems != null) {
-            inventory.setContents(filterItems);
-        }
-
-        this.initHotbar(inventory, allowedItems, hopperData);
-
+    public void openHopperGUI(Player player, HopperData hopperData) {
+        Inventory inventory = Bukkit.createInventory(new HopperHolder(player), 27, Component.text("§8Filtro Hopper"));
+        if (hopperData.hopperItems != null) inventory.setContents(hopperData.hopperItems);
+        this.initHotbar(inventory, hopperData.allowedItems, hopperData);
         player.openInventory(inventory);
     }
 

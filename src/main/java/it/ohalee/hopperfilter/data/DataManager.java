@@ -3,8 +3,6 @@ package it.ohalee.hopperfilter.data;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import it.ohalee.hopperfilter.HopperFilter;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,7 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class DataManager {
 
@@ -28,37 +25,23 @@ public class DataManager {
     }
 
     public void saveHoppers(final Collection<HopperData> values) {
-
-      //  for (Player player : Bukkit.getOnlinePlayers()) {
-      //      player.closeInventory();
-      //  }
-
-        final Gson gson = new GsonBuilder().registerTypeAdapter(HopperData.class, new HopperSerializer()).setPrettyPrinting().create();
-        final List<HopperData> data = new ArrayList<>(values);
-        data.toArray();
-        try {
-            try (FileWriter fileWriter = new FileWriter(this.file, false)) {
-                fileWriter.flush();
-                gson.toJson(data, fileWriter);
-            }
+        Gson gson = new GsonBuilder().registerTypeAdapter(HopperData.class, new HopperSerializer()).setPrettyPrinting().create();
+        try (FileWriter fileWriter = new FileWriter(this.file, false)) {
+            fileWriter.flush();
+            gson.toJson(new ArrayList<>(values), fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public HopperData[] getHopperData() {
-        try {
-            Gson gson;
+        try (JsonReader reader = new JsonReader(new FileReader(this.file))) {
             JsonArray arr = new JsonArray();
-            final JsonReader reader = new JsonReader(new FileReader(this.file));
-            final JsonParser parser = new JsonParser();
-            final JsonElement parsedElement = parser.parse(reader);
+            JsonElement parsedElement = JsonParser.parseReader(reader);
             if (parsedElement.isJsonArray()) {
                 arr = parsedElement.getAsJsonArray();
             }
-            gson = new GsonBuilder().registerTypeAdapter(HopperData.class, new HopperDeserializer()).create();
-            reader.close();
+            Gson gson = new GsonBuilder().registerTypeAdapter(HopperData.class, new HopperDeserializer()).create();
             return gson.fromJson(arr, HopperData[].class);
         } catch (IOException e) {
             e.printStackTrace();

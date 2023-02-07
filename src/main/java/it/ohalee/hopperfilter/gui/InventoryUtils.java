@@ -2,10 +2,8 @@ package it.ohalee.hopperfilter.gui;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InventoryUtils {
-    private final ItemStack forwardArrow;
-    private final ItemStack backArrow;
-    private final ItemStack noPageLeft;
+
     private final ItemStack itemNotAvailable;
     ItemStack glass;
     Map<String, ItemStack> skulls;
@@ -29,21 +25,10 @@ public class InventoryUtils {
         final ItemMeta meta = this.glass.getItemMeta();
         meta.setDisplayName("§7§oplay.hemerald.net");
         this.glass.setItemMeta(meta);
-
-        this.forwardArrow = new ItemStack(Material.SPECTRAL_ARROW);
-        final ItemMeta forwardArrowItemMeta = this.forwardArrow.getItemMeta();
-        forwardArrowItemMeta.setDisplayName(ChatColor.YELLOW + "Pagina successiva");
-        this.forwardArrow.setItemMeta(forwardArrowItemMeta);
-
-        this.backArrow = new ItemStack(Material.SPECTRAL_ARROW);
-        final ItemMeta backArrowItemMeta = this.backArrow.getItemMeta();
-        backArrowItemMeta.setDisplayName(ChatColor.YELLOW + "Pagina precedente");
-        this.backArrow.setItemMeta(backArrowItemMeta);
-
-        this.noPageLeft = new ItemStack(Material.BARRIER);
-        final ItemMeta noPageLeftMeta = this.noPageLeft.getItemMeta();
+        ItemStack noPageLeft = new ItemStack(Material.BARRIER);
+        final ItemMeta noPageLeftMeta = noPageLeft.getItemMeta();
         noPageLeftMeta.setDisplayName(ChatColor.RED + "Nessuna pagina rimanente!");
-        this.noPageLeft.setItemMeta(noPageLeftMeta);
+        noPageLeft.setItemMeta(noPageLeftMeta);
 
         this.itemNotAvailable = new ItemStack(Material.TNT_MINECART);
         final ItemMeta itemMeta = this.itemNotAvailable.getItemMeta();
@@ -77,29 +62,8 @@ public class InventoryUtils {
         return this.glass;
     }
 
-    public ItemStack getPlayerHead(final OfflinePlayer player) {
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        final SkullMeta meta = (SkullMeta) head.getItemMeta();
-        meta.setOwningPlayer(player);
-        meta.setDisplayName(ChatColor.GREEN + player.getName());
-        head.setItemMeta(meta);
-        return head;
-    }
-
     public ItemStack getItemNotAvailable() {
         return this.itemNotAvailable;
-    }
-
-    public ItemStack getForwardArrow() {
-        return this.forwardArrow;
-    }
-
-    public ItemStack getBackwardArrow() {
-        return this.backArrow;
-    }
-
-    public ItemStack getNoPageLeft() {
-        return this.noPageLeft;
     }
 
     public ItemStack getBlackListButton(final boolean blacklistEnabled) {
