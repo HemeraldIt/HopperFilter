@@ -1,0 +1,7 @@
+name: HopperFilter
+version: '${project.version}'
+main: it.ohalee.hopperfilter.HopperFilter
+api-version: 1.17
+authors: [ ohAlee ]
+commands:
+  hopperremove:
